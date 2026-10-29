@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - DashCoffee Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-mug-hot"></i>
+                <h2>DashCoffee</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a></li>
+                <li><a href="products.html"><i class="fa-solid fa-mug-saucer"></i><span>Products & Menu</span></a></li>
+                <li><a href="orders.html"><i class="fa-solid fa-cash-register"></i><span>Order Processing</span></a></li>
+                <li><a href="billing.html"><i class="fa-solid fa-receipt"></i><span>Billing & Payments</span></a></li>
+                <li><a href="inventory.html"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span></a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-chart-line"></i><span>Sales Reports</span></a></li>
+                <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i><span>Order History</span></a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span class="user-name" id="current-user-name">User</span>
+                    <span class="user-role" id="current-user-role">Role</span>
+                </div>
+                <button id="logout-btn" title="Logout"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title">
+                    <h1>System Settings & Configuration</h1>
+                </div>
+            </header>
+
+            <div class="content-body" style="max-width: 800px;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Coffee Shop Profile</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="shop-name">Shop Name</label>
+                        <input type="text" id="shop-name" class="form-control" value="DashCoffee Specialty Shop">
+                    </div>
+                    <div class="form-group">
+                        <label for="shop-address">Address</label>
+                        <input type="text" id="shop-address" class="form-control" value="123 Coffee Bean Way, Suite 100">
+                    </div>
+                    <div class="form-group">
+                        <label for="shop-phone">Contact Phone</label>
+                        <input type="text" id="shop-phone" class="form-control" value="+1-555-COFFEE">
+                    </div>
+                    <div class="form-group">
+                        <label for="shop-tax">Default Tax Rate (%)</label>
+                        <input type="number" id="shop-tax" class="form-control" value="10">
+                    </div>
+                    <button class="btn btn-primary" onclick="alert('Shop settings saved successfully!')">Save Profile</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Database & Backup Management</h2>
+                    </div>
+                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">
+                        Export all IndexedDB database records as a JSON backup file or reset database data to default initial state.
+                    </p>
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn btn-secondary" id="export-db-btn"><i class="fa-solid fa-download"></i> Export Database JSON</button>
+                        <button class="btn btn-danger" id="reset-db-btn"><i class="fa-solid fa-triangle-exclamation"></i> Reset Database</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await window.dbManager.init();
+
+            document.getElementById('export-db-btn').addEventListener('click', async () => {
+                const stores = ['products', 'orders', 'order_items', 'payments', 'inventory', 'product_recipes', 'inventory_transactions', 'users', 'suppliers', 'sales_records'];
+                const backup = {};
+                for (let store of stores) {
+                    backup[store] = await window.dbManager.getAll(store);
+                }
+
+                const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `DashCoffee_Backup_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+            });
+
+            document.getElementById('reset-db-btn').addEventListener('click', async () => {
+                if (confirm('WARNING: This will delete all current database records and re-seed initial data. Are you sure?')) {
+                    indexedDB.deleteDatabase('CoffeeShopDB');
+                    alert('Database reset. Reloading application...');
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing & Payments - DashCoffee Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-mug-hot"></i>
+                <h2>DashCoffee</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a></li>
+                <li><a href="products.html"><i class="fa-solid fa-mug-saucer"></i><span>Products & Menu</span></a></li>
+                <li><a href="orders.html"><i class="fa-solid fa-cash-register"></i><span>Order Processing</span></a></li>
+                <li><a href="billing.html"><i class="fa-solid fa-receipt"></i><span>Billing & Payments</span></a></li>
+                <li><a href="inventory.html"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span></a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-chart-line"></i><span>Sales Reports</span></a></li>
+                <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i><span>Order History</span></a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span class="user-name" id="current-user-name">User</span>
+                    <span class="user-role" id="current-user-role">Role</span>
+                </div>
+                <button id="logout-btn" title="Logout"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title">
+                    <h1>Billing & Payment Processing</h1>
+                </div>
+            </header>
+
+            <div class="content-body" style="display: grid; grid-template-columns: 1fr 400px; gap: 25px; align-items: start;">
+                <!-- Pending Orders List -->
+                <div class="card" style="margin-bottom: 0;">
+                    <div class="card-header">
+                        <h2>Pending Orders Awaiting Payment</h2>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order #</th>
+                                    <th>Customer</th>
+                                    <th>Type</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="billing-orders-tbody">
+                                <tr><td colspan="6" style="text-align: center;">Loading pending orders...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payment Checkout Panel -->
+                <div class="card" id="payment-section" style="margin-bottom: 0; display: none;">
+                    <div class="card-header">
+                        <h2>Process Payment</h2>
+                    </div>
+                    <div style="background-color: var(--cream); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="font-size: 14px; margin-bottom: 4px;">Order Number: <strong id="bill-order-number">-</strong></p>
+                        <p style="font-size: 14px; margin-bottom: 4px;">Customer: <strong id="bill-customer">-</strong></p>
+                        <p style="font-size: 14px; margin-bottom: 4px;">Subtotal: <strong id="bill-subtotal">$0.00</strong></p>
+                        <p style="font-size: 14px; margin-bottom: 4px;">Tax (10%): <strong id="bill-tax">$0.00</strong></p>
+                        <p style="font-size: 16px; color: var(--coffee-dark); margin-top: 6px;">Total Due: <strong id="bill-total">$0.00</strong></p>
+                    </div>
+
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label for="payment-method">Payment Method</label>
+                            <select id="payment-method" class="form-control" required>
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Card</option>
+                                <option value="Digital Wallet">Digital Wallet</option>
+                            </select>
+                        </div>
+
+                        <div id="cash-tendered-section">
+                            <div class="form-group">
+                                <label for="amount-paid">Amount Tendered ($)</label>
+                                <input type="number" step="0.01" id="amount-paid" class="form-control" required placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="change-due">Change Due ($)</label>
+                                <input type="text" id="change-due" class="form-control" readonly value="0.00" style="background-color: var(--beige);">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;">
+                            <i class="fa-solid fa-print"></i> Complete Payment & Print Receipt
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Completed Payments History -->
+            <div class="card" style="margin-top: 25px;">
+                <div class="card-header">
+                    <h2>Recent Completed Payments</h2>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Transaction Ref</th>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Amount Paid</th>
+                                <th>Method</th>
+                                <th>Date & Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payment-history-tbody">
+                            <tr><td colspan="6" style="text-align: center;">Loading payment history...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/billing.js"></script>
+</body>
+</html>

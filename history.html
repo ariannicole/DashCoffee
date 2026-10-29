@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History - DashCoffee Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-mug-hot"></i>
+                <h2>DashCoffee</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a></li>
+                <li><a href="products.html"><i class="fa-solid fa-mug-saucer"></i><span>Products & Menu</span></a></li>
+                <li><a href="orders.html"><i class="fa-solid fa-cash-register"></i><span>Order Processing</span></a></li>
+                <li><a href="billing.html"><i class="fa-solid fa-receipt"></i><span>Billing & Payments</span></a></li>
+                <li><a href="inventory.html"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span></a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-chart-line"></i><span>Sales Reports</span></a></li>
+                <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i><span>Order History</span></a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span class="user-name" id="current-user-name">User</span>
+                    <span class="user-role" id="current-user-role">Role</span>
+                </div>
+                <button id="logout-btn" title="Logout"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title">
+                    <h1>Order History & Audit Trail</h1>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="card">
+                    <div class="card-header" style="flex-wrap: wrap; gap: 15px;">
+                        <h2>All Orders Record</h2>
+                        <input type="text" id="search-history" class="form-control" placeholder="Search by order # or customer..." style="width: 280px;">
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order #</th>
+                                    <th>Customer</th>
+                                    <th>Type</th>
+                                    <th>Total Amount</th>
+                                    <th>Status</th>
+                                    <th>Date & Time</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-tbody">
+                                <tr><td colspan="7" style="text-align: center;">Loading order history...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/history.js"></script>
+</body>
+</html>

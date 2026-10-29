@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products & Menu - DashCoffee Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-mug-hot"></i>
+                <h2>DashCoffee</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a></li>
+                <li><a href="products.html"><i class="fa-solid fa-mug-saucer"></i><span>Products & Menu</span></a></li>
+                <li><a href="orders.html"><i class="fa-solid fa-cash-register"></i><span>Order Processing</span></a></li>
+                <li><a href="billing.html"><i class="fa-solid fa-receipt"></i><span>Billing & Payments</span></a></li>
+                <li><a href="inventory.html"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span></a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-chart-line"></i><span>Sales Reports</span></a></li>
+                <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i><span>Order History</span></a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span class="user-name" id="current-user-name">User</span>
+                    <span class="user-role" id="current-user-role">Role</span>
+                </div>
+                <button id="logout-btn" title="Logout"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title">
+                    <h1>Products & Menu Management</h1>
+                </div>
+                <div class="header-actions">
+                    <button id="add-product-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Product</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="card">
+                    <div class="card-header" style="flex-wrap: wrap; gap: 15px;">
+                        <h2>Menu Items Catalog</h2>
+                        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                            <input type="text" id="search-product" class="form-control" placeholder="Search products..." style="width: 220px;">
+                            <select id="filter-category" class="form-control" style="width: 160px;">
+                                <option value="">All Categories</option>
+                                <option value="Coffee">Coffee</option>
+                                <option value="Cold Drinks">Cold Drinks</option>
+                                <option value="Bakery">Bakery</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Product Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-tbody">
+                                <tr><td colspan="7" style="text-align: center;">Loading products...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="product-modal-title">Add New Product</h3>
+                <button class="modal-close" id="close-product-modal">&times;</button>
+            </div>
+            <form id="product-form">
+                <div class="modal-body">
+                    <input type="hidden" id="product-id">
+                    <div class="form-group">
+                        <label for="product-name">Product Name</label>
+                        <input type="text" id="product-name" class="form-control" required placeholder="e.g. Mocha">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-category">Category</label>
+                        <select id="product-category" class="form-control" required>
+                            <option value="Coffee">Coffee</option>
+                            <option value="Cold Drinks">Cold Drinks</option>
+                            <option value="Bakery">Bakery</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-price">Price ($)</label>
+                        <input type="number" step="0.01" id="product-price" class="form-control" required placeholder="4.50">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-desc">Description</label>
+                        <textarea id="product-desc" class="form-control" rows="3" placeholder="Product ingredients and details..."></textarea>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="product-avail" style="width: 18px; height: 18px;">
+                        <label for="product-avail" style="margin-bottom: 0;">Available for Sale</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-product-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/products.js"></script>
+</body>
+</html>

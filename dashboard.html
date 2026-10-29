@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DashCoffee Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-mug-hot"></i>
+                <h2>DashCoffee</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a></li>
+                <li><a href="products.html"><i class="fa-solid fa-mug-saucer"></i><span>Products & Menu</span></a></li>
+                <li><a href="orders.html"><i class="fa-solid fa-cash-register"></i><span>Order Processing</span></a></li>
+                <li><a href="billing.html"><i class="fa-solid fa-receipt"></i><span>Billing & Payments</span></a></li>
+                <li><a href="inventory.html"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span></a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-chart-line"></i><span>Sales Reports</span></a></li>
+                <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i><span>Order History</span></a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span class="user-name" id="current-user-name">User</span>
+                    <span class="user-role" id="current-user-role">Role</span>
+                </div>
+                <button id="logout-btn" title="Logout"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title">
+                    <h1>Dashboard Overview</h1>
+                </div>
+                <div class="header-actions">
+                    <span id="current-date-time" style="font-size: 13px; color: var(--text-muted);"></span>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Statistics Grid -->
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-dollar-sign"></i></div>
+                        <div class="stat-details">
+                            <h3>Today's Sales</h3>
+                            <div class="stat-value" id="stat-today-sales">$0.00</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>
+                        <div class="stat-details">
+                            <h3>Total Orders</h3>
+                            <div class="stat-value" id="stat-total-orders">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-mug-saucer"></i></div>
+                        <div class="stat-details">
+                            <h3>Available Products</h3>
+                            <div class="stat-value" id="stat-avail-products">0 / 0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: var(--danger);">
+                        <div class="stat-icon" style="background-color: rgba(211,47,47,0.1); color: var(--danger);"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="stat-details">
+                            <h3>Low-Stock Ingredients</h3>
+                            <div class="stat-value" id="stat-low-stock">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tables Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                    <!-- Recent Transactions -->
+                    <div class="card" style="margin-bottom: 0;">
+                        <div class="card-header">
+                            <h2>Recent Transactions</h2>
+                            <a href="billing.html" class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">View All</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                               <thead>
+                                   <tr>
+                                       <th>Order #</th>
+                                       <th>Customer</th>
+                                       <th>Amount</th>
+                                       <th>Method</th>
+                                       <th>Status</th>
+                                       <th>Time</th>
+                                   </tr>
+                               </thead>
+                               <tbody id="recent-transactions-tbody">
+                                   <tr><td colspan="6" style="text-align: center;">Loading...</td></tr>
+                               </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Best-Selling Products -->
+                    <div class="card" style="margin-bottom: 0;">
+                        <div class="card-header">
+                            <h2>Best-Selling Coffee Products</h2>
+                            <a href="products.html" class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">Menu</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                               <thead>
+                                   <tr>
+                                       <th>Product Name</th>
+                                       <th>Category</th>
+                                       <th>Popularity</th>
+                                   </tr>
+                               </thead>
+                               <tbody id="best-sellers-tbody">
+                                   <tr><td colspan="3" style="text-align: center;">Loading...</td></tr>
+                               </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        document.getElementById('current-date-time').textContent = new Date().toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    </script>
+</body>
+</html>

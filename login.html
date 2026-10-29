@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DashCoffee Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <i class="fa-solid fa-mug-hot"></i>
+                <h1>DashCoffee</h1>
+                <p>Shop Management & POS System</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter username (e.g. admin, cashier)" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                </button>
+            </form>
+            <div style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
+                <p><strong>Demo Accounts:</strong></p>
+                <p>Admin: admin / admin123</p>
+                <p>Cashier: cashier / cashier123</p>
+                <p>Inventory: inventory / inv123</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await window.dbManager.seedInitialData();
+
+            const form = document.getElementById('login-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                const res = await window.authManager.login(username, password);
+                if (res.success) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert(res.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
