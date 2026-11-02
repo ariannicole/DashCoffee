@@ -24,6 +24,8 @@
                 <li><a href="inventory.html"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span></a></li>
                 <li><a href="reports.html"><i class="fa-solid fa-chart-line"></i><span>Sales Reports</span></a></li>
                 <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i><span>Order History</span></a></li>
+                <li><a href="about.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
+                <li><a href="contact.html"><i class="fa-solid fa-envelope"></i><span>Contact Us</span></a></li>
                 <li><a href="settings.html"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
             </ul>
             <div class="sidebar-footer">
@@ -91,7 +93,7 @@
             await window.dbManager.init();
 
             document.getElementById('export-db-btn').addEventListener('click', async () => {
-                const stores = ['products', 'orders', 'order_items', 'payments', 'inventory', 'product_recipes', 'inventory_transactions', 'users', 'suppliers', 'sales_records'];
+                const stores = ['products', 'orders', 'order_items', 'payments', 'inventory', 'product_recipes', 'inventory_transactions', 'users', 'suppliers', 'sales_records', 'contact_messages'];
                 const backup = {};
                 for (let store of stores) {
                     backup[store] = await window.dbManager.getAll(store);

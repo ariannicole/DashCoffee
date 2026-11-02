@@ -3,7 +3,7 @@
  */
 
 const DB_NAME = 'CoffeeShopDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2; // Incremented for contact_messages store
 
 class DatabaseManager {
     constructor() {
@@ -98,6 +98,14 @@ class DatabaseManager {
                     store.createIndex('order_id', 'order_id', { unique: false });
                     store.createIndex('transaction_date', 'transaction_date', { unique: false });
                 }
+
+                // 11. Contact Messages
+                if (!db.objectStoreNames.contains('contact_messages')) {
+                    const store = db.createObjectStore('contact_messages', { keyPath: 'message_id', autoIncrement: true });
+                    store.createIndex('email_address', 'email_address', { unique: false });
+                    store.createIndex('message_status', 'message_status', { unique: false });
+                    store.createIndex('created_at', 'created_at', { unique: false });
+                }
             };
         });
     }
@@ -143,68 +151,36 @@ class DatabaseManager {
             const p9 = await this.add('products', { product_name: 'Croissant', category: 'Bakery', description: 'Buttery flaky French pastry freshly baked', price: 3.75, image: 'assets/images/croissant.jpg', availability: true, created_at: new Date().toISOString() });
 
             // Seed Product Recipes
-            // Espresso: 18g coffee beans, 1 cup, 1 lid
             await this.add('product_recipes', { product_id: p1, inventory_id: inv1, quantity_required: 18 });
             await this.add('product_recipes', { product_id: p1, inventory_id: inv7, quantity_required: 1 });
             await this.add('product_recipes', { product_id: p1, inventory_id: inv8, quantity_required: 1 });
 
-            // Cappuccino: 18g coffee beans, 150ml milk, 1 cup, 1 lid
             await this.add('product_recipes', { product_id: p3, inventory_id: inv1, quantity_required: 18 });
             await this.add('product_recipes', { product_id: p3, inventory_id: inv2, quantity_required: 150 });
             await this.add('product_recipes', { product_id: p3, inventory_id: inv7, quantity_required: 1 });
             await this.add('product_recipes', { product_id: p3, inventory_id: inv8, quantity_required: 1 });
 
-            // Cafe Latte: 18g coffee beans, 200ml milk, 1 cup, 1 lid
             await this.add('product_recipes', { product_id: p4, inventory_id: inv1, quantity_required: 18 });
             await this.add('product_recipes', { product_id: p4, inventory_id: inv2, quantity_required: 200 });
             await this.add('product_recipes', { product_id: p4, inventory_id: inv7, quantity_required: 1 });
             await this.add('product_recipes', { product_id: p4, inventory_id: inv8, quantity_required: 1 });
 
-            // Caramel Macchiato: 18g coffee beans, 180ml milk, 30ml caramel, 1 cup, 1 lid
             await this.add('product_recipes', { product_id: p5, inventory_id: inv1, quantity_required: 18 });
             await this.add('product_recipes', { product_id: p5, inventory_id: inv2, quantity_required: 180 });
             await this.add('product_recipes', { product_id: p5, inventory_id: inv6, quantity_required: 30 });
             await this.add('product_recipes', { product_id: p5, inventory_id: inv7, quantity_required: 1 });
             await this.add('product_recipes', { product_id: p5, inventory_id: inv8, quantity_required: 1 });
 
-            // Seed Sample Order & Payment
-            const sampleOrderNum = 'ORD-1001';
-            const sampleOrderId = await this.add('orders', {
-                order_number: sampleOrderNum,
-                customer_name: 'Alice Smith',
-                order_type: 'Dine-In',
-                order_status: 'Completed',
-                subtotal: 9.50,
-                discount: 0.00,
-                tax: 0.95,
-                total_amount: 10.45,
-                created_at: new Date(Date.now() - 3600000 * 2).toISOString()
-            });
-
-            await this.add('order_items', {
-                order_id: sampleOrderId,
-                product_id: p3,
-                quantity: 2,
-                unit_price: 4.75,
-                customization: 'Whole Milk, Regular Size',
-                line_total: 9.50
-            });
-
-            const samplePayId = await this.add('payments', {
-                order_id: sampleOrderId,
-                payment_method: 'Cash',
-                amount_paid: 15.00,
-                change_due: 4.55,
-                payment_status: 'Paid',
-                payment_date: new Date(Date.now() - 3600000 * 2).toISOString(),
-                transaction_reference: 'TXN-998821'
-            });
-
-            await this.add('sales_records', {
-                order_id: sampleOrderId,
-                payment_id: samplePayId,
-                total_sales: 10.45,
-                transaction_date: new Date(Date.now() - 3600000 * 2).toISOString()
+            // Seed Sample Contact Message
+            await this.add('contact_messages', {
+                full_name: 'David Johnson',
+                email_address: 'david.j@example.com',
+                contact_number: '+1-555-9012',
+                subject: 'Private event inquiry',
+                message: 'Hello, do you host private coffee tasting events on weekends?',
+                message_status: 'Pending',
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
             });
 
             console.log("Initial database seeding completed successfully.");

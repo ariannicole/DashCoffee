@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - DashCoffee Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-mug-hot"></i>
+                <h2>DashCoffee</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a></li>
+                <li><a href="products.html"><i class="fa-solid fa-mug-saucer"></i><span>Products & Menu</span></a></li>
+                <li><a href="orders.html"><i class="fa-solid fa-cash-register"></i><span>Order Processing</span></a></li>
+                <li><a href="billing.html"><i class="fa-solid fa-receipt"></i><span>Billing & Payments</span></a></li>
+                <li><a href="inventory.html"><i class="fa-solid fa-boxes-stacked"></i><span>Inventory</span></a></li>
+                <li><a href="reports.html"><i class="fa-solid fa-chart-line"></i><span>Sales Reports</span></a></li>
+                <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i><span>Order History</span></a></li>
+                <li><a href="about.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
+                <li><a href="contact.html"><i class="fa-solid fa-envelope"></i><span>Contact Us</span></a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <span class="user-name" id="current-user-name">User</span>
+                    <span class="user-role" id="current-user-role">Role</span>
+                </div>
+                <button id="logout-btn" title="Logout"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title">
+                    <h1>About DashCoffee</h1>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Hero Section -->
+                <div style="background: linear-gradient(rgba(44,24,16,0.85), rgba(44,24,16,0.85)), url('assets/images/espresso.jpg') center/cover; border-radius: 16px; padding: 50px 30px; text-align: center; color: var(--cream); margin-bottom: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.15);">
+                    <i class="fa-solid fa-mug-hot" style="font-size: 48px; color: var(--caramel-light); margin-bottom: 15px;"></i>
+                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 10px; color: var(--white);">Welcome to DashCoffee</h2>
+                    <p style="font-size: 16px; color: var(--beige); max-width: 700px; margin: 0 auto; line-height: 1.6;">Crafting exceptional moments, one perfectly brewed cup at a time. Discover our passion for quality coffee and community connection.</p>
+                </div>
+
+                <!-- A. Our Story & B. Mission & C. Vision Grid -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 25px;">
+                    <!-- Our Story -->
+                    <div class="card" style="margin-bottom: 0;">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-book-open" style="color: var(--caramel); margin-right: 8px;"></i> Our Story</h2>
+                        </div>
+                        <p style="line-height: 1.7; color: var(--text-main); margin-bottom: 15px;">
+                            DashCoffee was founded with a simple yet profound vision: to bring artisan-quality specialty coffee into a warm, welcoming space where people can connect, relax, and savor every sip. Inspired by traditional European coffeehouses and modern artisanal roasting techniques, our journey began when a group of passionate coffee connoisseurs decided to source directly from sustainable farms around the globe.
+                        </p>
+                        <p style="line-height: 1.7; color: var(--text-main);">
+                            Every batch of beans is carefully selected, roasted to perfection, and prepared by expert baristas dedicated to excellence. Our goal has always been uncompromising quality paired with heartfelt customer service, creating a home away from home for coffee lovers everywhere.
+                        </p>
+                    </div>
+
+                    <!-- Mission & Vision -->
+                    <div style="display: flex; flex-direction: column; gap: 25px;">
+                        <div class="card" style="margin-bottom: 0; flex: 1;">
+                            <div class="card-header">
+                                <h2><i class="fa-solid fa-bullseye" style="color: var(--caramel); margin-right: 8px;"></i> Our Mission</h2>
+                            </div>
+                            <p style="font-size: 14px; line-height: 1.6; color: var(--text-main);">
+                                To provide high-quality coffee, delicious beverages, and excellent customer service while creating a welcoming environment where customers can relax, connect, and enjoy every cup.
+                            </p>
+                        </div>
+                        <div class="card" style="margin-bottom: 0; flex: 1;">
+                            <div class="card-header">
+                                <h2><i class="fa-solid fa-eye" style="color: var(--caramel); margin-right: 8px;"></i> Our Vision</h2>
+                            </div>
+                            <p style="font-size: 14px; line-height: 1.6; color: var(--text-main);">
+                                To become a trusted and recognized coffee shop known for quality products, excellent service, and a comfortable customer experience.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- D. Our Core Values -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-gem" style="color: var(--caramel); margin-right: 8px;"></i> Our Core Values</h2>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div style="background: var(--cream); padding: 20px; border-radius: 10px; border-left: 4px solid var(--caramel);">
+                            <h3 style="font-size: 16px; color: var(--coffee-dark); margin-bottom: 8px;"><i class="fa-solid fa-award"></i> Quality</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">Providing high-quality coffee and ingredients in every brew.</p>
+                        </div>
+                        <div style="background: var(--cream); padding: 20px; border-radius: 10px; border-left: 4px solid var(--caramel);">
+                            <h3 style="font-size: 16px; color: var(--coffee-dark); margin-bottom: 8px;"><i class="fa-solid fa-face-smile"></i> Customer Satisfaction</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">Prioritizing customer needs and memorable experiences.</p>
+                        </div>
+                        <div style="background: var(--cream); padding: 20px; border-radius: 10px; border-left: 4px solid var(--caramel);">
+                            <h3 style="font-size: 16px; color: var(--coffee-dark); margin-bottom: 8px;"><i class="fa-solid fa-lightbulb"></i> Innovation</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">Continuously improving coffee products and services.</p>
+                        </div>
+                        <div style="background: var(--cream); padding: 20px; border-radius: 10px; border-left: 4px solid var(--caramel);">
+                            <h3 style="font-size: 16px; color: var(--coffee-dark); margin-bottom: 8px;"><i class="fa-solid fa-users"></i> Teamwork</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">Building a friendly and supportive working environment.</p>
+                        </div>
+                        <div style="background: var(--cream); padding: 20px; border-radius: 10px; border-left: 4px solid var(--caramel);">
+                            <h3 style="font-size: 16px; color: var(--coffee-dark); margin-bottom: 8px;"><i class="fa-solid fa-chart-pie"></i> Responsibility</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">Managing resources and inventory efficiently and sustainably.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- E. Why Choose Us? -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-circle-check" style="color: var(--caramel); margin-right: 8px;"></i> Why Choose Us?</h2>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                        <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: rgba(212, 163, 115, 0.1); border-radius: 8px;">
+                            <i class="fa-solid fa-mug-saucer" style="color: var(--caramel); font-size: 20px; margin-top: 2px;"></i>
+                            <div>
+                                <h4 style="font-size: 14px; color: var(--coffee-dark); margin-bottom: 4px;">Freshly Prepared Coffee</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">Crafted fresh on demand with precision and care.</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: rgba(212, 163, 115, 0.1); border-radius: 8px;">
+                            <i class="fa-solid fa-tag" style="color: var(--caramel); font-size: 20px; margin-top: 2px;"></i>
+                            <div>
+                                <h4 style="font-size: 14px; color: var(--coffee-dark); margin-bottom: 4px;">Affordable Prices</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">Premium quality beverages at accessible, fair prices.</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: rgba(212, 163, 115, 0.1); border-radius: 8px;">
+                            <i class="fa-solid fa-hands-clapping" style="color: var(--caramel); font-size: 20px; margin-top: 2px;"></i>
+                            <div>
+                                <h4 style="font-size: 14px; color: var(--coffee-dark); margin-bottom: 4px;">Friendly Customer Service</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">Welcoming baristas ready to brighten your day.</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: rgba(212, 163, 115, 0.1); border-radius: 8px;">
+                            <i class="fa-solid fa-couch" style="color: var(--caramel); font-size: 20px; margin-top: 2px;"></i>
+                            <div>
+                                <h4 style="font-size: 14px; color: var(--coffee-dark); margin-bottom: 4px;">Comfortable Atmosphere</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">Cozy seating, soothing ambiance, and free Wi-Fi.</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: rgba(212, 163, 115, 0.1); border-radius: 8px;">
+                            <i class="fa-solid fa-seedling" style="color: var(--caramel); font-size: 20px; margin-top: 2px;"></i>
+                            <div>
+                                <h4 style="font-size: 14px; color: var(--coffee-dark); margin-bottom: 4px;">Quality Ingredients</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">Organic beans, fresh dairy, and artisan bakery items.</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: rgba(212, 163, 115, 0.1); border-radius: 8px;">
+                            <i class="fa-solid fa-utensils" style="color: var(--caramel); font-size: 20px; margin-top: 2px;"></i>
+                            <div>
+                                <h4 style="font-size: 14px; color: var(--coffee-dark); margin-bottom: 4px;">Variety of Selections</h4>
+                                <p style="font-size: 12px; color: var(--text-muted);">Rich espressos, cold brews, teas, and fresh pastries.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
