@@ -1,5 +1,5 @@
 /**
- * reports.js - Sales Reports & Analytics Logic
+ * reports.js - Sales Reports & Analytics Logic (PHP Currency)
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -34,7 +34,6 @@ async function generateReports() {
         const startDate = document.getElementById('report-start-date').value;
         const endDate = document.getElementById('report-end-date').value;
 
-        // Filter by date range if provided
         const filteredSales = salesRecords.filter(sr => {
             if (!sr.transaction_date) return false;
             const d = sr.transaction_date.split('T')[0];
@@ -49,7 +48,7 @@ async function generateReports() {
 
         const totalTransactions = filteredSales.length;
 
-        document.getElementById('rep-total-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
+        document.getElementById('rep-total-revenue').textContent = formatPeso(totalRevenue);
         document.getElementById('rep-total-txns').textContent = totalTransactions;
         document.getElementById('rep-total-orders').textContent = orders.length;
 
@@ -65,9 +64,9 @@ async function generateReports() {
         const methodTbody = document.getElementById('report-payment-tbody');
         if (methodTbody) {
             methodTbody.innerHTML = `
-                <tr><td>Cash Payments</td><td>$${methodCounts['Cash'].toFixed(2)}</td></tr>
-                <tr><td>Card Payments</td><td>$${methodCounts['Card'].toFixed(2)}</td></tr>
-                <tr><td>Digital Wallet</td><td>$${methodCounts['Digital Wallet'].toFixed(2)}</td></tr>
+                <tr><td>Cash Payments</td><td>${formatPeso(methodCounts['Cash'])}</td></tr>
+                <tr><td>Card Payments</td><td>${formatPeso(methodCounts['Card'])}</td></tr>
+                <tr><td>Digital Wallet</td><td>${formatPeso(methodCounts['Digital Wallet'])}</td></tr>
             `;
         }
 
@@ -98,7 +97,7 @@ async function generateReports() {
                     tr.innerHTML = `
                         <td><strong>${prod.product_name}</strong></td>
                         <td>${data.qty}</td>
-                        <td>$${data.revenue.toFixed(2)}</td>
+                        <td>${formatPeso(data.revenue)}</td>
                     `;
                     prodTbody.appendChild(tr);
                 }
@@ -133,19 +132,19 @@ async function generateReports() {
 }
 
 function exportReportsCSV() {
-    let csv = 'DashCoffee Sales Report\n\n';
-    csv += 'Transaction ID,Order ID,Total Sales,Date\n';
+    let csv = 'DashCoffee Davao City Sales Report\n\n';
+    csv += 'Transaction ID,Order ID,Total Sales (PHP),Date\n';
     
     window.dbManager.getAll('sales_records').then(sales => {
         sales.forEach(s => {
-            csv += `${s.sales_id},${s.order_id},${s.total_sales},${s.transaction_date}\n`;
+            csv += `${s.sales_id},${s.order_id},${Number(s.total_sales).toFixed(2)},${s.transaction_date}\n`;
         });
 
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.setAttribute('href', url);
-        a.setAttribute('download', `DashCoffee_Sales_Report_${new Date().toISOString().split('T')[0]}.csv`);
+        a.setAttribute('download', `DashCoffee_Davao_Sales_Report_${new Date().toISOString().split('T')[0]}.csv`);
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

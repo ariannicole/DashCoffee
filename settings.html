@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - DashCoffee Management System</title>
+    <title>Settings - DashCoffee Davao City, Philippines</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -41,32 +41,62 @@
         <main class="main-content">
             <header class="top-header">
                 <div class="page-title">
-                    <h1>System Settings & Configuration</h1>
+                    <h1>System Settings & Philippine Business Profile</h1>
                 </div>
             </header>
 
             <div class="content-body" style="max-width: 800px;">
                 <div class="card">
                     <div class="card-header">
-                        <h2>Coffee Shop Profile</h2>
+                        <h2>Business Profile (Davao City, Philippines)</h2>
                     </div>
-                    <div class="form-group">
-                        <label for="shop-name">Shop Name</label>
-                        <input type="text" id="shop-name" class="form-control" value="DashCoffee Specialty Shop">
-                    </div>
-                    <div class="form-group">
-                        <label for="shop-address">Address</label>
-                        <input type="text" id="shop-address" class="form-control" value="123 Coffee Bean Way, Suite 100">
-                    </div>
-                    <div class="form-group">
-                        <label for="shop-phone">Contact Phone</label>
-                        <input type="text" id="shop-phone" class="form-control" value="+1-555-COFFEE">
-                    </div>
-                    <div class="form-group">
-                        <label for="shop-tax">Default Tax Rate (%)</label>
-                        <input type="number" id="shop-tax" class="form-control" value="10">
-                    </div>
-                    <button class="btn btn-primary" onclick="alert('Shop settings saved successfully!')">Save Profile</button>
+                    <form id="settings-form">
+                        <div class="form-group">
+                            <label for="shop-name">Business Name</label>
+                            <input type="text" id="shop-name" class="form-control" value="DashCoffee Specialty Shop" required>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label for="shop-city">City</label>
+                                <input type="text" id="shop-city" class="form-control" value="Davao City" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="shop-province">Province</label>
+                                <input type="text" id="shop-province" class="form-control" value="Davao del Sur" required>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label for="shop-country">Country</label>
+                                <input type="text" id="shop-country" class="form-control" value="Philippines" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="shop-postal">Postal Code</label>
+                                <input type="text" id="shop-postal" class="form-control" value="8000" required>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label for="shop-phone">Contact Number (+63)</label>
+                                <input type="text" id="shop-phone" class="form-control" value="+63 912 345 6789" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="shop-email">Business Email</label>
+                                <input type="email" id="shop-email" class="form-control" value="support@dashcoffee.ph" required>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label for="shop-currency">Currency Code</label>
+                                <input type="text" id="shop-currency" class="form-control" value="PHP" readonly style="background-color: var(--beige);">
+                            </div>
+                            <div class="form-group">
+                                <label for="shop-symbol">Currency Symbol</label>
+                                <input type="text" id="shop-symbol" class="form-control" value="₱" readonly style="background-color: var(--beige);">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Business Profile</button>
+                    </form>
                 </div>
 
                 <div class="card">
@@ -92,6 +122,33 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await window.dbManager.init();
 
+            const profile = getBusinessProfile();
+            document.getElementById('shop-name').value = profile.business_name;
+            document.getElementById('shop-city').value = profile.city;
+            document.getElementById('shop-province').value = profile.province;
+            document.getElementById('shop-country').value = profile.country;
+            document.getElementById('shop-postal').value = profile.postal_code || '8000';
+            document.getElementById('shop-phone').value = profile.contact_number;
+            document.getElementById('shop-email').value = profile.business_email;
+
+            document.getElementById('settings-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const updated = {
+                    business_name: document.getElementById('shop-name').value.trim(),
+                    city: document.getElementById('shop-city').value.trim(),
+                    province: document.getElementById('shop-province').value.trim(),
+                    country: document.getElementById('shop-country').value.trim(),
+                    postal_code: document.getElementById('shop-postal').value.trim(),
+                    contact_number: document.getElementById('shop-phone').value.trim(),
+                    business_email: document.getElementById('shop-email').value.trim(),
+                    currency_code: 'PHP',
+                    currency_symbol: '₱',
+                    locale: 'en-PH'
+                };
+                localStorage.setItem('coffee_business_profile', JSON.stringify(updated));
+                alert('Philippine business profile saved successfully!');
+            });
+
             document.getElementById('export-db-btn').addEventListener('click', async () => {
                 const stores = ['products', 'orders', 'order_items', 'payments', 'inventory', 'product_recipes', 'inventory_transactions', 'users', 'suppliers', 'sales_records', 'contact_messages'];
                 const backup = {};
@@ -103,7 +160,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `DashCoffee_Backup_${new Date().toISOString().split('T')[0]}.json`;
+                a.download = `DashCoffee_Davao_Backup_${new Date().toISOString().split('T')[0]}.json`;
                 a.click();
             });
 

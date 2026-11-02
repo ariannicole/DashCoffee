@@ -1,5 +1,5 @@
 /**
- * orders.js - Order Processing & POS Interface
+ * orders.js - Order Processing & POS Interface (PHP Currency)
  */
 
 let cart = [];
@@ -63,7 +63,7 @@ function renderMenuGrid(products) {
         card.style.cssText = `background: var(--white); border-radius: 10px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; transition: var(--transition); border: 1px solid var(--beige);`;
         card.innerHTML = `
             <div style="font-weight: 600; font-size: 15px; color: var(--coffee-dark); margin-bottom: 6px;">${prod.product_name}</div>
-            <div style="font-size: 13px; color: var(--caramel); font-weight: 700; margin-bottom: 8px;">$${Number(prod.price).toFixed(2)}</div>
+            <div style="font-size: 13px; color: var(--caramel); font-weight: 700; margin-bottom: 8px;">${formatPeso(prod.price)}</div>
             <div style="font-size: 12px; color: var(--text-muted); line-height: 1.3;">${prod.description || prod.category}</div>
         `;
         card.addEventListener('click', () => addToCart(prod));
@@ -108,13 +108,13 @@ function renderCart() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${item.product_name}</td>
-                <td>$${Number(item.unit_price).toFixed(2)}</td>
+                <td>${formatPeso(item.unit_price)}</td>
                 <td>
                     <button class="btn btn-secondary" style="padding: 2px 6px; font-size: 11px;" onclick="updateQty(${index}, -1)">-</button>
                     <span style="margin: 0 8px; font-weight: 600;">${item.quantity}</span>
                     <button class="btn btn-secondary" style="padding: 2px 6px; font-size: 11px;" onclick="updateQty(${index}, 1)">+</button>
                 </td>
-                <td>$${lineTotal.toFixed(2)}</td>
+                <td>${formatPeso(lineTotal)}</td>
                 <td><button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="removeFromCart(${index})"><i class="fa-solid fa-trash"></i></button></td>
             `;
             tbody.appendChild(tr);
@@ -124,9 +124,9 @@ function renderCart() {
     const tax = subtotal * 0.10; // 10% tax config
     const total = subtotal + tax;
 
-    if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-    if (taxEl) taxEl.textContent = `$${tax.toFixed(2)}`;
-    if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+    if (subtotalEl) subtotalEl.textContent = formatPeso(subtotal);
+    if (taxEl) taxEl.textContent = formatPeso(tax);
+    if (totalEl) totalEl.textContent = formatPeso(total);
 }
 
 window.updateQty = function(index, delta) {
@@ -151,7 +151,6 @@ async function processOrderCheckout() {
     const customerName = document.getElementById('order-customer-name').value.trim() || 'Walk-in Customer';
     const orderType = document.getElementById('order-type').value;
 
-    // Validate inventory requirements against product recipes
     for (let item of cart) {
         const recipes = productRecipes.filter(r => r.product_id === item.product_id);
         for (let recipe of recipes) {
@@ -195,7 +194,6 @@ async function processOrderCheckout() {
                 line_total: item.unit_price * item.quantity
             });
 
-            // Deduct inventory
             const recipes = productRecipes.filter(r => r.product_id === item.product_id);
             for (let recipe of recipes) {
                 const consumed = recipe.quantity_required * item.quantity;
@@ -205,7 +203,6 @@ async function processOrderCheckout() {
                     inv.updated_at = new Date().toISOString();
                     await window.dbManager.update('inventory', inv);
 
-                    // Record inventory transaction
                     await window.dbManager.add('inventory_transactions', {
                         inventory_id: inv.inventory_id,
                         transaction_type: 'Usage',
@@ -223,7 +220,6 @@ async function processOrderCheckout() {
         document.getElementById('order-customer-name').value = '';
         await loadPOSData();
 
-        // Optionally redirect to billing
         if (confirm('Proceed to billing payment for this order?')) {
             window.location.href = `billing.html?order_id=${orderId}`;
         }

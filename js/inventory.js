@@ -1,5 +1,5 @@
 /**
- * inventory.js - Inventory Management & Stock Tracking Logic
+ * inventory.js - Inventory Management & Stock Tracking Logic (PHP Currency)
  */
 
 let allInventory = [];
@@ -73,7 +73,6 @@ function renderInventoryTable(items) {
     }
 
     for (let item of items) {
-        const sup = allSuppliers.find(s => s.supplier_id === Number(item.supplier_id)) || { supplier_name: 'N/A' };
         const isLow = Number(item.quantity_in_stock) <= Number(item.minimum_stock);
         const isOut = Number(item.quantity_in_stock) <= 0;
 
@@ -94,7 +93,7 @@ function renderInventoryTable(items) {
             <td>${item.category}</td>
             <td>${item.quantity_in_stock} ${item.unit}</td>
             <td>${item.minimum_stock} ${item.unit}</td>
-            <td>$${Number(item.cost_per_unit).toFixed(2)}</td>
+            <td>${formatPeso(item.cost_per_unit)}</td>
             <td><span class="badge ${badgeClass}">${badgeText}</span></td>
             <td>
                 <button class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;" onclick="adjustStock(${item.inventory_id})"><i class="fa-solid fa-plus-minus"></i></button>
@@ -220,7 +219,7 @@ async function handleInventorySubmit(e) {
     if (id) {
         data.inventory_id = Number(id);
         const existing = await window.dbManager.getById('inventory', id);
-        data.quantity_in_stock = existing.quantity_in_stock; // preserve stock unless adjusted via adjustStock
+        data.quantity_in_stock = existing.quantity_in_stock;
         await window.dbManager.update('inventory', data);
     } else {
         await window.dbManager.add('inventory', data);

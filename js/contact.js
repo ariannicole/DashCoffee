@@ -1,5 +1,5 @@
 /**
- * contact.js - Contact Us Form & Admin Message Management Logic
+ * contact.js - Contact Us Form & Admin Message Management Logic (Philippine format)
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -48,11 +48,21 @@ async function handleContactSubmit(e) {
         return;
     }
 
+    // Philippine phone number validation (+63 9XX XXX XXXX or 09XXXXXXXXX)
+    if (phone) {
+        const cleanedPhone = phone.replace(/[\s\-\(\)]/g, '');
+        const phoneRegex = /^(\+63|0)?9\d{9}$/;
+        if (!phoneRegex.test(cleanedPhone)) {
+            showNotification('Please enter a valid Philippine mobile number (e.g. +63 912 345 6789).', 'error');
+            return;
+        }
+    }
+
     const now = new Date().toISOString();
     const messageData = {
         full_name: fullName,
         email_address: email,
-        contact_number: phone || 'N/A',
+        contact_number: phone || '+63 912 345 6789',
         subject: subject,
         message: message,
         message_status: 'Pending',
@@ -62,7 +72,7 @@ async function handleContactSubmit(e) {
 
     try {
         await window.dbManager.add('contact_messages', messageData);
-        showNotification('Your message has been successfully sent and saved! We will get back to you soon.', 'success');
+        showNotification('Your message has been successfully sent and saved! Maraming salamat, we will get back to you soon.', 'success');
         document.getElementById('contact-us-form').reset();
         await loadAdminMessages();
     } catch (err) {
@@ -121,7 +131,7 @@ function renderAdminMessagesTable(messages) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td><strong>#${m.message_id}</strong></td>
-            <td>${m.full_name}<br><small style="color: var(--text-muted);">${m.email_address}</small></td>
+            <td>${m.full_name}<br><small style="color: var(--text-muted);">${m.email_address} (${m.contact_number})</small></td>
             <td>${m.subject}</td>
             <td>${m.message.substring(0, 45)}...</td>
             <td><span class="badge ${badgeClass}">${m.message_status}</span></td>

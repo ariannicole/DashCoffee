@@ -1,20 +1,17 @@
 /**
- * products.js - Product & Menu Management Logic
+ * products.js - Product & Menu Management Logic (PHP Currency)
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
     await window.dbManager.init();
     await loadProductsTable();
 
-    // Search and Filter listeners
     const searchInput = document.getElementById('search-product');
     const categoryFilter = document.getElementById('filter-category');
     if (searchInput) searchInput.addEventListener('input', filterProducts);
     if (categoryFilter) categoryFilter.addEventListener('change', filterProducts);
 
-    // Modal triggers
     const addBtn = document.getElementById('add-product-btn');
-    const modalOverlay = document.getElementById('product-modal');
     const closeModal = document.getElementById('close-product-modal');
     const cancelModal = document.getElementById('cancel-product-modal');
     const productForm = document.getElementById('product-form');
@@ -61,7 +58,7 @@ function renderProductsTable(products) {
             <td><strong>#${prod.product_id}</strong></td>
             <td>${prod.product_name}</td>
             <td>${prod.category}</td>
-            <td>$${Number(prod.price).toFixed(2)}</td>
+            <td>${formatPeso(prod.price)}</td>
             <td>${prod.description || '-'}</td>
             <td><span class="badge ${prod.availability ? 'badge-active' : 'badge-out'}">${prod.availability ? 'Available' : 'Unavailable'}</span></td>
             <td>

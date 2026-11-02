@@ -1,5 +1,5 @@
 /**
- * history.js - Order History & Audit Trail Management
+ * history.js - Order History & Audit Trail Management (PHP Currency)
  */
 
 let allHistoryOrders = [];
@@ -46,7 +46,7 @@ function renderHistoryTable(orders) {
             <td><strong>${ord.order_number}</strong></td>
             <td>${ord.customer_name || 'Walk-in'}</td>
             <td>${ord.order_type}</td>
-            <td>$${Number(ord.total_amount).toFixed(2)}</td>
+            <td>${formatPeso(ord.total_amount)}</td>
             <td><span class="badge ${badgeClass}">${ord.order_status}</span></td>
             <td>${new Date(ord.created_at).toLocaleString()}</td>
             <td>
@@ -78,10 +78,10 @@ window.viewOrderDetails = async function(orderId) {
     let itemsStr = '';
     items.forEach(item => {
         const prod = products.find(p => p.product_id === item.product_id) || { product_name: 'Item' };
-        itemsStr += `- ${prod.product_name} x${item.quantity} ($${Number(item.line_total).toFixed(2)})\n`;
+        itemsStr += `- ${prod.product_name} x${item.quantity} (${formatPeso(item.line_total)})\n`;
     });
 
-    alert(`Order Details: ${order.order_number}\nCustomer: ${order.customer_name}\nType: ${order.order_type}\nStatus: ${order.order_status}\nPayment: ${payment ? payment.payment_method + ' (' + payment.payment_status + ')' : 'Unpaid'}\n\nItems:\n${itemsStr}\nTotal: $${Number(order.total_amount).toFixed(2)}`);
+    alert(`Order Details: ${order.order_number}\nCustomer: ${order.customer_name}\nType: ${order.order_type}\nStatus: ${order.order_status}\nPayment: ${payment ? payment.payment_method + ' (' + payment.payment_status + ')' : 'Unpaid'}\n\nItems:\n${itemsStr}\nTotal: ${formatPeso(order.total_amount)}`);
 };
 
 window.cancelOrder = async function(orderId) {
@@ -91,7 +91,6 @@ window.cancelOrder = async function(orderId) {
         order.order_status = 'Cancelled';
         await window.dbManager.update('orders', order);
 
-        // Restore inventory quantities according to product recipes
         const orderItems = await window.dbManager.getAll('order_items');
         const items = orderItems.filter(i => i.order_id === orderId);
         const productRecipes = await window.dbManager.getAll('product_recipes');

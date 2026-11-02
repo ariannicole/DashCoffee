@@ -1,5 +1,5 @@
 /**
- * dashboard.js - Real-Time Dashboard Statistics & Analytics
+ * dashboard.js - Real-Time Dashboard Statistics & Analytics (PHP Currency)
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -22,12 +22,10 @@ async function loadDashboardData() {
         let todaySales = 0;
         payments.forEach(pay => {
             if (pay.payment_status === 'Paid' && pay.payment_date && pay.payment_date.startsWith(todayStr)) {
-                // Find corresponding order amount or payment amount
                 todaySales += Number(pay.amount_paid) - Number(pay.change_due || 0);
             }
         });
         
-        // Alternatively sum from sales_records for today
         const salesRecords = await window.dbManager.getAll('sales_records');
         let todaySalesCalc = 0;
         salesRecords.forEach(sr => {
@@ -37,13 +35,12 @@ async function loadDashboardData() {
         });
         if (todaySalesCalc > 0) todaySales = todaySalesCalc;
 
-        // 2. Total Orders (Today or overall)
-        const todayOrders = orders.filter(o => o.created_at && o.created_at.startsWith(todayStr));
+        // 2. Total Orders
         const totalOrdersEl = document.getElementById('stat-total-orders');
         if (totalOrdersEl) totalOrdersEl.textContent = orders.length;
 
         const todaySalesEl = document.getElementById('stat-today-sales');
-        if (todaySalesEl) todaySalesEl.textContent = `$${todaySales.toFixed(2)}`;
+        if (todaySalesEl) todaySalesEl.textContent = formatPeso(todaySales);
 
         // 3. Available Products
         const availProducts = products.filter(p => p.availability);
@@ -66,11 +63,12 @@ async function loadDashboardData() {
             } else {
                 for (let pay of sortedPayments) {
                     const order = orders.find(o => o.order_id === pay.order_id) || { order_number: 'N/A', customer_name: 'Walk-in' };
+                    const amt = Number(pay.amount_paid - (pay.change_due || 0));
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td><strong>${order.order_number}</strong></td>
                         <td>${order.customer_name || 'Walk-in'}</td>
-                        <td>$${Number(pay.amount_paid - (pay.change_due || 0)).toFixed(2)}</td>
+                        <td>${formatPeso(amt)}</td>
                         <td>${pay.payment_method}</td>
                         <td><span class="badge badge-completed">${pay.payment_status}</span></td>
                         <td>${new Date(pay.payment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
@@ -84,7 +82,6 @@ async function loadDashboardData() {
         const bestSellersBody = document.getElementById('best-sellers-tbody');
         if (bestSellersBody) {
             bestSellersBody.innerHTML = '';
-            // Aggregate quantities by product_id
             const productCounts = {};
             orderItems.forEach(item => {
                 productCounts[item.product_id] = (productCounts[item.product_id] || 0) + Number(item.quantity);

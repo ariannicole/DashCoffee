@@ -1,5 +1,5 @@
 /**
- * billing.js - Billing, Payments & Receipt Generation Logic
+ * billing.js - Billing, Payments & Receipt Generation Logic (PHP Currency)
  */
 
 let selectedOrder = null;
@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Check if URL has order_id parameter
     const urlParams = new URLSearchParams(window.location.search);
     const orderIdParam = urlParams.get('order_id');
     if (orderIdParam) {
@@ -48,8 +47,6 @@ async function loadBillingOrders() {
 
         pendingOrders = orders.filter(o => !paidOrderIds.includes(o.order_id) && o.order_status !== 'Cancelled');
         renderBillingOrdersTable(pendingOrders);
-
-        // Also render payment history
         renderPaymentHistoryTable(payments, orders);
     } catch (err) {
         console.error("Error loading billing orders:", err);
@@ -72,7 +69,7 @@ function renderBillingOrdersTable(orders) {
             <td><strong>${ord.order_number}</strong></td>
             <td>${ord.customer_name || 'Walk-in'}</td>
             <td>${ord.order_type}</td>
-            <td>$${Number(ord.total_amount).toFixed(2)}</td>
+            <td>${formatPeso(ord.total_amount)}</td>
             <td><span class="badge badge-pending">${ord.order_status}</span></td>
             <td>
                 <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="selectOrderForBilling(${ord.order_id})"><i class="fa-solid fa-cash-register"></i> Pay</button>
@@ -90,13 +87,12 @@ async function selectOrderForBilling(orderId) {
         selectedOrder = order;
         document.getElementById('bill-order-number').textContent = order.order_number;
         document.getElementById('bill-customer').textContent = order.customer_name || 'Walk-in';
-        document.getElementById('bill-subtotal').textContent = `$${Number(order.subtotal).toFixed(2)}`;
-        document.getElementById('bill-tax').textContent = `$${Number(order.tax).toFixed(2)}`;
-        document.getElementById('bill-total').textContent = `$${Number(order.total_amount).toFixed(2)}`;
+        document.getElementById('bill-subtotal').textContent = formatPeso(order.subtotal);
+        document.getElementById('bill-tax').textContent = formatPeso(order.tax);
+        document.getElementById('bill-total').textContent = formatPeso(order.total_amount);
         document.getElementById('amount-paid').value = Number(order.total_amount).toFixed(2);
         calculateChange();
 
-        // Show payment panel / modal
         document.getElementById('payment-section').style.display = 'block';
     } catch (err) {
         console.error("Error selecting order:", err);
@@ -129,7 +125,6 @@ async function handlePaymentSubmit(e) {
         return;
     }
 
-    // Check if payment already exists for this order
     const payments = await window.dbManager.getAll('payments');
     const existing = payments.find(p => p.order_id === selectedOrder.order_id);
     if (existing) {
@@ -153,11 +148,9 @@ async function handlePaymentSubmit(e) {
     try {
         const paymentId = await window.dbManager.add('payments', paymentData);
 
-        // Update order status to Completed
         selectedOrder.order_status = 'Completed';
         await window.dbManager.update('orders', selectedOrder);
 
-        // Record sales record
         await window.dbManager.add('sales_records', {
             order_id: selectedOrder.order_id,
             payment_id: paymentId,
@@ -189,7 +182,7 @@ async function generatePrintableReceipt(order, payment) {
         itemsHtml += `
             <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
                 <span>${prod.product_name} x${item.quantity}</span>
-                <span>$${Number(item.line_total).toFixed(2)}</span>
+                <span>${formatPeso(item.line_total)}</span>
             </div>
         `;
     }
@@ -198,7 +191,7 @@ async function generatePrintableReceipt(order, payment) {
     receiptWin.document.write(`
         <html>
         <head>
-            <title>Receipt - DashCoffee</title>
+            <title>Receipt - DashCoffee Davao City</title>
             <style>
                 body { font-family: 'Courier New', Courier, monospace; font-size: 13px; padding: 20px; color: #2b2b2b; }
                 .center { text-align: center; }
@@ -208,8 +201,8 @@ async function generatePrintableReceipt(order, payment) {
         </head>
         <body>
             <div class="center">
-                <h2>DashCoffee Shop</h2>
-                <p>123 Coffee Bean Way, Suite 100<br>Tel: +1-555-COFFEE</p>
+                <h2>DashCoffee Specialty Shop</h2>
+                <p>Poblacion District, Davao City, Davao del Sur, Philippines<br>Tel: +63 912 345 6789</p>
             </div>
             <div class="line"></div>
             <div>
@@ -225,17 +218,17 @@ async function generatePrintableReceipt(order, payment) {
                 ${itemsHtml}
             </div>
             <div class="line"></div>
-            <div class="flex"><span>Subtotal:</span> <span>$${Number(order.subtotal).toFixed(2)}</span></div>
-            <div class="flex"><span>Tax (10%):</span> <span>$${Number(order.tax).toFixed(2)}</span></div>
-            <div class="flex" style="font-weight: bold; font-size: 15px; margin-top: 6px;"><span>Total:</span> <span>$${Number(order.total_amount).toFixed(2)}</span></div>
+            <div class="flex"><span>Subtotal:</span> <span>${formatPeso(order.subtotal)}</span></div>
+            <div class="flex"><span>Tax (10%):</span> <span>${formatPeso(order.tax)}</span></div>
+            <div class="flex" style="font-weight: bold; font-size: 15px; margin-top: 6px;"><span>Total:</span> <span>${formatPeso(order.total_amount)}</span></div>
             <div class="line"></div>
             <div class="flex"><span>Payment Method:</span> <span>${payment.payment_method}</span></div>
-            <div class="flex"><span>Amount Received:</span> <span>$${Number(payment.amount_paid).toFixed(2)}</span></div>
-            <div class="flex"><span>Change Due:</span> <span>$${Number(payment.change_due || 0).toFixed(2)}</span></div>
+            <div class="flex"><span>Amount Received:</span> <span>${formatPeso(payment.amount_paid)}</span></div>
+            <div class="flex"><span>Change Due:</span> <span>${formatPeso(payment.change_due || 0)}</span></div>
             <div class="line"></div>
             <div class="center" style="margin-top: 20px;">
-                <p>Thank you for visiting DashCoffee!</p>
-                <p>Please come again!</p>
+                <p>Thank you for visiting DashCoffee Davao City!</p>
+                <p>Mabuhay & Come Again!</p>
             </div>
             <script>
                 window.onload = function() { window.print(); }
@@ -260,12 +253,13 @@ function renderPaymentHistoryTable(payments, orders) {
 
     for (let pay of sorted) {
         const order = orders.find(o => o.order_id === pay.order_id) || { order_number: 'N/A', customer_name: 'Walk-in' };
+        const amt = Number(pay.amount_paid - (pay.change_due || 0));
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td><strong>${pay.transaction_reference}</strong></td>
             <td>${order.order_number}</td>
             <td>${order.customer_name || 'Walk-in'}</td>
-            <td>$${Number(pay.amount_paid - (pay.change_due || 0)).toFixed(2)}</td>
+            <td>${formatPeso(amt)}</td>
             <td>${pay.payment_method}</td>
             <td>${new Date(pay.payment_date).toLocaleString()}</td>
         `;
