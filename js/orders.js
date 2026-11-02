@@ -1,5 +1,5 @@
 /**
- * orders.js - Order Processing & POS Interface (PHP Currency)
+ * orders.js - Order Processing & POS Interface (PHP Currency with Pricing Table)
  */
 
 let cart = [];
@@ -23,15 +23,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderCart();
         });
     }
-
-    const searchMenu = document.getElementById('search-pos-menu');
-    if (searchMenu) {
-        searchMenu.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const filtered = menuProducts.filter(p => p.product_name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
-            renderMenuGrid(filtered);
-        });
-    }
 });
 
 async function loadPOSData() {
@@ -40,34 +31,36 @@ async function loadPOSData() {
         inventoryItems = await window.dbManager.getAll('inventory');
         productRecipes = await window.dbManager.getAll('product_recipes');
 
-        renderMenuGrid(menuProducts.filter(p => p.availability));
+        renderPricingTable(menuProducts.filter(p => p.availability));
         renderCart();
     } catch (err) {
         console.error("Error loading POS data:", err);
     }
 }
 
-function renderMenuGrid(products) {
-    const grid = document.getElementById('pos-menu-grid');
-    if (!grid) return;
+function renderPricingTable(products) {
+    const tbody = document.getElementById('pricing-table-body');
+    if (!tbody) return;
 
-    grid.innerHTML = '';
+    tbody.innerHTML = '';
+
     if (products.length === 0) {
-        grid.innerHTML = `<p style="grid-column: span 3; text-align: center; color: var(--text-muted);">No products available.</p>`;
+        tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: #ffffff;">No products available.</td></tr>`;
         return;
     }
 
-    for (let prod of products) {
-        const card = document.createElement('div');
-        card.className = 'pos-product-card';
-        card.style.cssText = `background: var(--white); border-radius: 10px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; transition: var(--transition); border: 1px solid var(--beige);`;
-        card.innerHTML = `
-            <div style="font-weight: 600; font-size: 15px; color: var(--coffee-dark); margin-bottom: 6px;">${prod.product_name}</div>
-            <div style="font-size: 13px; color: var(--caramel); font-weight: 700; margin-bottom: 8px;">${formatPeso(prod.price)}</div>
-            <div style="font-size: 12px; color: var(--text-muted); line-height: 1.3;">${prod.description || prod.category}</div>
+    // Sort products alphabetically by name for a clean display
+    const sortedProducts = [...products].sort((a, b) => a.product_name.localeCompare(b.product_name));
+
+    for (let prod of sortedProducts) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${prod.product_name}</td>
+            <td>${formatPeso(prod.price)}</td>
         `;
-        card.addEventListener('click', () => addToCart(prod));
-        grid.appendChild(card);
+        tr.addEventListener('click', () => addToCart(prod));
+        tr.title = 'Click to add to order';
+        tbody.appendChild(tr);
     }
 }
 
@@ -79,7 +72,7 @@ function addToCart(product) {
         cart.push({
             product_id: product.product_id,
             product_name: product.product_name,
-            unit_price: product.price,
+            unit_price: Number(product.price) || 0,
             quantity: 1,
             customization: 'Standard'
         });
@@ -99,10 +92,10 @@ function renderCart() {
     let subtotal = 0;
 
     if (cart.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Cart is empty. Select items from menu.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Cart is empty</td></tr>`;
     } else {
         cart.forEach((item, index) => {
-            const lineTotal = item.unit_price * item.quantity;
+            const lineTotal = Number(item.unit_price) * Number(item.quantity);
             subtotal += lineTotal;
 
             const tr = document.createElement('tr');
@@ -121,7 +114,7 @@ function renderCart() {
         });
     }
 
-    const tax = subtotal * 0.10; // 10% tax config
+    const tax = subtotal * 0.10;
     const total = subtotal + tax;
 
     if (subtotalEl) subtotalEl.textContent = formatPeso(subtotal);
@@ -163,7 +156,7 @@ async function processOrderCheckout() {
         }
     }
 
-    let subtotal = cart.reduce((acc, item) => acc + (item.unit_price * item.quantity), 0);
+    let subtotal = cart.reduce((acc, item) => acc + (Number(item.unit_price) * Number(item.quantity)), 0);
     let tax = subtotal * 0.10;
     let total = subtotal + tax;
 
@@ -191,7 +184,7 @@ async function processOrderCheckout() {
                 quantity: item.quantity,
                 unit_price: item.unit_price,
                 customization: item.customization,
-                line_total: item.unit_price * item.quantity
+                line_total: Number(item.unit_price) * Number(item.quantity)
             });
 
             const recipes = productRecipes.filter(r => r.product_id === item.product_id);
