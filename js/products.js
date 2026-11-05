@@ -1,5 +1,5 @@
 /**
- * products.js - Product & Menu Management Logic (PHP Currency)
+ * products.js - Product & Menu Management Logic (PHP Currency with Images)
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -36,37 +36,45 @@ let allProducts = [];
 async function loadProductsTable() {
     try {
         allProducts = await window.dbManager.getAll('products');
-        renderProductsTable(allProducts);
+        renderProductsGrid(allProducts);
     } catch (err) {
         console.error("Error loading products:", err);
     }
 }
 
-function renderProductsTable(products) {
-    const tbody = document.getElementById('products-tbody');
-    if (!tbody) return;
+function renderProductsGrid(products) {
+    const container = document.getElementById('products-grid');
+    if (!container) return;
 
-    tbody.innerHTML = '';
+    container.innerHTML = '';
     if (products.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No products found.</td></tr>`;
+        container.innerHTML = `<p style="grid-column: span 4; text-align: center; color: var(--text-muted);">No products found.</p>`;
         return;
     }
 
     for (let prod of products) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><strong>#${prod.product_id}</strong></td>
-            <td>${prod.product_name}</td>
-            <td>${prod.category}</td>
-            <td>${formatPeso(prod.price)}</td>
-            <td>${prod.description || '-'}</td>
-            <td><span class="badge ${prod.availability ? 'badge-active' : 'badge-out'}">${prod.availability ? 'Available' : 'Unavailable'}</span></td>
-            <td>
-                <button class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;" onclick="editProduct(${prod.product_id})"><i class="fa-solid fa-pen"></i></button>
-                <button class="btn btn-danger" style="padding: 6px 10px; font-size: 12px;" onclick="deleteProduct(${prod.product_id})"><i class="fa-solid fa-trash"></i></button>
-            </td>
+        const card = document.createElement('div');
+        card.style.cssText = `background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(44, 24, 16, 0.08); border: 1px solid var(--beige); transition: var(--transition);`;
+        card.innerHTML = `
+            <div style="width: 100%; height: 160px; background: var(--cream); overflow: hidden;">
+                <img src="${prod.image || 'https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=800'}" alt="${prod.product_name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=800'">
+            </div>
+            <div style="padding: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                    <h3 style="font-size: 16px; color: var(--coffee-dark); font-weight: 600; flex: 1;">${prod.product_name}</h3>
+                    <span style="font-size: 16px; font-weight: 700; color: var(--caramel);">${formatPeso(prod.price)}</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4;">${prod.description || prod.category}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="badge ${prod.availability ? 'badge-active' : 'badge-out'}">${prod.availability ? 'Available' : 'Unavailable'}</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;" onclick="editProduct(${prod.product_id})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-danger" style="padding: 6px 10px; font-size: 12px;" onclick="deleteProduct(${prod.product_id})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
         `;
-        tbody.appendChild(tr);
+        container.appendChild(card);
     }
 }
 
@@ -80,7 +88,7 @@ function filterProducts() {
         return matchesQuery && matchesCategory;
     });
 
-    renderProductsTable(filtered);
+    renderProductsGrid(filtered);
 }
 
 function openProductModal(product = null) {
@@ -98,6 +106,7 @@ function openProductModal(product = null) {
         document.getElementById('product-category').value = product.category;
         document.getElementById('product-price').value = product.price;
         document.getElementById('product-desc').value = product.description || '';
+        document.getElementById('product-image').value = product.image || '';
         document.getElementById('product-avail').checked = product.availability;
     } else {
         title.textContent = 'Add New Product';
@@ -136,6 +145,7 @@ async function handleProductSubmit(e) {
         category: document.getElementById('product-category').value,
         price: parseFloat(document.getElementById('product-price').value),
         description: document.getElementById('product-desc').value.trim(),
+        image: document.getElementById('product-image').value.trim(),
         availability: document.getElementById('product-avail').checked,
         created_at: new Date().toISOString()
     };
